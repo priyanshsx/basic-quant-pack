@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np 
 import plotly.graph_objects as go 
+from plotly.subplots import make_subplots
 
 # importing the raw csv file and creating a df from it 
 
@@ -22,14 +23,14 @@ df['daily_returns'] = df['close'].pct_change()
 df['sma_20'] = df['close'].rolling(window=20).mean()
 df['sma_50'] = df['close'].rolling(window=50).mean()
 
-# calculating the log returns (concept to research: np.log() and .shift()) 
+# calculating the log returns  
 df['log_returns'] = np.log(df['close'] / df['close'].shift(1)) 
 
 # rolling volatility for a 30-day period (annualized, for 365 trading days for crypto)
 
 df['rolling_vol_annualized'] = df['log_returns'].rolling(window=30).std() * np.sqrt(365)
 
-# calculating the cumulative return (concept to research: .cumprod())
+# calculating the cumulative return 
 
 df['cumulative_return'] = (1 + df['daily_returns']).cumprod() - 1 
 
@@ -94,4 +95,50 @@ fig.update_layout(
     yaxis_title='Price (USD)'
 )
 
+# making subplots for quant charts 
+
+quant_fig = make_subplots(rows=3, cols=1, shared_xaxes=True)
+
+# risk vs. return 
+
+quant_fig.add_trace(go.Scatter(
+    x=df.index,
+    y=df['cumulative_return'],
+    mode='lines',
+    name='return',
+    line=dict(color='green', width=1.5)
+), row=1, col=1)
+
+quant_fig.add_trace(go.Scatter(
+    x=df.index,
+    y=df['rolling_vol_annualized'],
+    mode='lines',
+    name='annualized risk',
+    line=dict(color='purple', width=1.5)
+), row=2, col=1)
+
+# underwater drawdown chart 
+
+quant_fig.add_trace(go.Scatter(
+    x=df.index,
+    y=df['drawdown'],
+    mode='lines',
+    name='drawdown',
+    line=dict(color='red', width=1.5),
+    fill='tozeroy'
+), row=3, col=1)
+
+# returns distribution histogram 
+
+hist_fig = go.Figure(go.Histogram(x=df['log_returns'].dropna(), nbinsx=100, name='Returns Distribution'))
+
+# adding chart titles 
+
+quant_fig.update_layout(title=f"{filename} Quant Sheet")
+hist_fig.update_layout(title=f"{filename} Historical Distribution")
+
+# printing the charts
+
 fig.show()
+quant_fig.show()
+hist_fig.show()
