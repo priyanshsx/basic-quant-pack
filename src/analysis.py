@@ -40,8 +40,14 @@ df['running_max'] = df['cum_return_for_drawdown'].cummax()
 df['drawdown'] = ((df['cum_return_for_drawdown'] - df['running_max']) / df['running_max'])
 max_drawdown = df['drawdown'].min()
 
-# print all values 
+# saving the processed data as a new csv file 
+df.to_csv('/home/priyansh/Documents/d/basic_quant_pack/processed/processed_data.csv')
+
+# print info 
 print(df.info())
+
+# saving the processed file 
+print(f"\nThe file is now saved as processed_data.csv in the folder: processed.")
 
 # visualization engine (concept to research: plotly candlestick charts)
 
