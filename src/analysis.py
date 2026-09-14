@@ -29,9 +29,9 @@ df['log_returns'] = np.log(df['close'] / df['close']).shift(1)
 
 df['rolling_vol'] = df['log_returns'].rolling(window=30).std()
 
-# calculating the 20D and 50D SMA (concept to research: .mean())
-
 # calculating the cumulative return (concept to research: .cumprod())
+
+df['cumulative_return'] = (1 + df['daily_returns']).cumprod() - 1 
 
 # calculating the max drawdown 
 
