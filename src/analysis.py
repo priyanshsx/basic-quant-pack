@@ -15,7 +15,7 @@ while True:
 
 # daily returns 
 
-df['daily_returns'] = df.pct_change() 
+df['daily_returns'] = df['close'].pct_change()
 
 # moving averages
 
@@ -23,17 +23,25 @@ df['sma_20'] = df['close'].rolling(window=20).mean()
 df['sma_50'] = df['close'].rolling(window=50).mean()
 
 # calculating the log returns (concept to research: np.log() and .shift()) 
-df['log_returns'] = np.log(df['close'] / df['close']).shift(1) 
+df['log_returns'] = np.log(df['close'] / df['close'].shift(1)) 
 
-# rolling volatility for a 30-day period 
+# rolling volatility for a 30-day period (annualized)
 
-df['rolling_vol'] = df['log_returns'].rolling(window=30).std()
+df['rolling_vol_annualized'] = df['log_returns'].rolling(window=30).std() * np.sqrt(252)
 
 # calculating the cumulative return (concept to research: .cumprod())
 
 df['cumulative_return'] = (1 + df['daily_returns']).cumprod() - 1 
 
 # calculating the max drawdown 
+
+df['cum_return_for_drawdown'] = (1 + df['daily_returns'].fillna(0)).cumprod()
+df['running_max'] = df['cum_return_for_drawdown'].cummax()
+df['drawdown'] = ((df['cum_return_for_drawdown'] - df['running_max']) / df['running_max'])
+max_drawdown = df['drawdown'].min()
+
+# print all values 
+print(df.info())
 
 # visualization engine (concept to research: plotly candlestick charts)
 
