@@ -25,9 +25,9 @@ df['sma_50'] = df['close'].rolling(window=50).mean()
 # calculating the log returns (concept to research: np.log() and .shift()) 
 df['log_returns'] = np.log(df['close'] / df['close'].shift(1)) 
 
-# rolling volatility for a 30-day period (annualized)
+# rolling volatility for a 30-day period (annualized, for 365 trading days for crypto)
 
-df['rolling_vol_annualized'] = df['log_returns'].rolling(window=30).std() * np.sqrt(252)
+df['rolling_vol_annualized'] = df['log_returns'].rolling(window=30).std() * np.sqrt(365)
 
 # calculating the cumulative return (concept to research: .cumprod())
 
