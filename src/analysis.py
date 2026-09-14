@@ -9,12 +9,21 @@ while True:
 
     try:
         df = pd.read_csv(user_file, index_col='date', parse_dates=True)
+        break
     except FileNotFoundError:
         print(f"\nFile not found. Please ensure that the file is in the folder where this script runs from and ensure that you get the name exactly right.\n")
 
-# calculating standard returns (concept to research: .pct_change())
+# daily returns 
+
+df['daily_returns_pct'] = df.pct_change() * 100 
+
+# moving averages
+
+df['sma_20'] = df['close'].rolling(window=20).mean()
+df['sma_50'] = df['close'].rolling(window=50).mean()
 
 # calculating the log returns (concept to research: np.log() and .shift()) 
+df['log_returns_pct'] = np.log(df['close'] / df['close']).shift(1) * 100 
 
 # calculating the rolling volatility (concept to research: .rolling(), .std())
 
