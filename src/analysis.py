@@ -15,7 +15,7 @@ while True:
 
 # daily returns 
 
-df['daily_returns_pct'] = df.pct_change() * 100 
+df['daily_returns'] = df.pct_change() 
 
 # moving averages
 
@@ -23,9 +23,11 @@ df['sma_20'] = df['close'].rolling(window=20).mean()
 df['sma_50'] = df['close'].rolling(window=50).mean()
 
 # calculating the log returns (concept to research: np.log() and .shift()) 
-df['log_returns_pct'] = np.log(df['close'] / df['close']).shift(1) * 100 
+df['log_returns'] = np.log(df['close'] / df['close']).shift(1) 
 
-# calculating the rolling volatility (concept to research: .rolling(), .std())
+# rolling volatility for a 30-day period 
+
+df['rolling_vol'] = df['log_returns'].rolling(window=30).std()
 
 # calculating the 20D and 50D SMA (concept to research: .mean())
 
