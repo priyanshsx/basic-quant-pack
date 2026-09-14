@@ -51,3 +51,47 @@ print(f"\nThe file is now saved as processed_data.csv in the folder: processed."
 
 # visualization engine (concept to research: plotly candlestick charts)
 
+# creating the empty canvas 
+
+fig = go.Figure()
+
+# adding the candlestick trace 
+
+fig.add_trace(go.Candlestick(
+    x=df.index,
+    open=df['open'],
+    high=df['high'],
+    low=df['low'],
+    close=df['close'],
+    name='Price'
+))
+
+# adding the sma traces 
+
+fig.add_trace(go.Scatter(
+    x=df.index,
+    y=df['sma_20'],
+    mode='lines',
+    name='20-day SMA',
+    line=dict(color='blue', width=1.5)
+))
+
+fig.add_trace(go.Scatter(
+    x=df.index,
+    y=df['sma_50'],
+    mode='lines',
+    name='50-day SMA',
+    line=dict(color='orange', width=1.5)
+))
+
+# updating the final layout 
+
+filename = user_file.replace(".csv", "")
+
+fig.update_layout(
+    title=f'{filename} Analysis',
+    xaxis_title='Date',
+    yaxis_title='Price (USD)'
+)
+
+fig.show()
